@@ -1,25 +1,37 @@
 from houghspace import HoughSpace
 from util import *
+from time import time
+import cv2
+from scipy.misc import imsave
 
-hs = HoughSpace('C:/Users/Martin/Desktop/Houghtransform/images/pappa.jpg', out_shape=(50, 50))
-#hs = HoughSpace('C:/Users/Martin/Desktop/dot.png')
 
-hs.show()
+whole = cv2.imread('images/edge/edge2.png')
+pappa = cv2.imread('images/edge/mamma.png')
+johannes = cv2.imread('images/edge/meg.png')
+whole = whole - pappa - johannes
+
+edge = np.array(whole)
+edge[:, :, 1] = pappa[:, :, 0]
+edge[:, :, 2] = johannes[:, :, 0]
+
+#cv2.imshow('', edge)
+#cv2.waitKey()
+cv2.imwrite('test.jpg', edge)
+
+to_size = (3000, 4000)#(edge.shape[0]*2,  edge.shape[1]*2)
+
+edge = cv2.resize(edge, to_size)
+pappa = cv2.resize(pappa, to_size)
+johannes = cv2.resize(johannes, to_size)
+
+hough_background = HoughSpace(edge).hough#, out_shape=(200, 200))
+hough_pappa = HoughSpace(pappa).hough#, out_shape=(200, 200))
+hough_johannes = HoughSpace(johannes).hough#, out_shape=(200, 200))
+
+hough_background[:, :, 1] = hough_pappa[:, :, 0]
+hough_background[:, :, 2] = hough_johannes[:, :, 0]
+
+imsave('images/output/pappa_johannes_color_hough_large.png', hough_background)
+#hs.transform()
 #hs.show()
-'''
-img = cv2.resize(img, (w//scale, h//scale))
-cv2.imwrite('gray.jpg', img)
-cv2.imshow('grayscale', cv2.resize(np.array(img), (800, 500)))
-cv2.waitKey()
-cv2.destroyAllWindows()
-
-img = img/255
-print(180/w)
-accumulator, thetas, rhos = hough_line(img, 180/w)
-
-#accumulator = cv2.resize(accumulator, (w, h))
-cv2.imwrite('houghlines.jpg', accumulator*255)
-cv2.imshow('grayscale', accumulator)
-cv2.waitKey()
-cv2.destroyAllWindows()
-'''
+#hs.alternate_transform(hs.gray)
