@@ -15,31 +15,28 @@ background_hough = HoughSpace(background, save=False).hough
 obj1_hough = HoughSpace(obj1, save=False).hough
 obj2_hough = HoughSpace(obj2, save=False).hough
 
-print(obj1_hough.shape, np.max(obj1_hough))
-
 
 hough_color = np.array(background_hough)
 hough_color[:, :, 0][...] = obj1_hough[:, :, 0]
-hough_color[:, :, 2][...] = obj2_hough[:, :, 0]
+hough_color[:, :, 1][...] = obj2_hough[:, :, 0]
 
-print(hough_color.shape, np.mean(hough_color), np.max(hough_color))
 
-imsave('images/hough/color.png', hough_color*255)
+imsave('images/hough/color.png', hough_color)
 
 plt.subplot(221)
-plt.imshow(background_hough)
+plt.imshow(background_hough/255)
 plt.title('Background')
 
 plt.subplot(222)
-plt.imshow(hough_color)
+plt.imshow(hough_color/255)
 plt.title('Hough color')
 
 plt.subplot(223)
-plt.imshow(obj1_hough)
+plt.imshow(obj1_hough/255)
 plt.title('Object 1')
 
 plt.subplot(224)
-plt.imshow(obj2_hough)
+plt.imshow(obj2_hough/255)
 plt.title('Object 2')
 
 plt.show()
